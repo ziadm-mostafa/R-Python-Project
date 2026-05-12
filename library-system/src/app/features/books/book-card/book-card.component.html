@@ -1,0 +1,47 @@
+<div class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col h-full">
+    <div class="h-48 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center p-6 relative overflow-hidden">
+        @if (book.cover_url) {
+            <img [src]="book.cover_url" (error)="onImageError()" class="w-full h-full object-contain p-2 rounded-t-xl" alt="{{ book.title }}">
+        } @else {
+            <svg class="w-24 h-24 text-blue-200 dark:text-gray-500 transform -rotate-12" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 4.804A7.909 7.909 0 0111 5c1.962 0 3.783.712 5.196 1.898A.997.997 0 0117 7.624v8.4c0 .82-.958 1.244-1.604.733A5.961 5.961 0 0011 15.5c-1.127 0-2.189.311-3.104.857L7 16.357V7.624c0-.276.114-.541.316-.726A7.903 7.903 0 019 4.804zM7 16.357A5.963 5.963 0 013.104 15.5C2.458 15.5 1.5 15.924 1.5 16.744v-8.4a.997.997 0 01.804-.857A7.903 7.903 0 015 7.102v8.4l2 .855z"></path>
+            </svg>
+        }
+        <div class="absolute bottom-3 right-3">
+            <span [class]="book.available_copies > 0 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'" class="text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                {{ book.available_copies > 0 ? 'In Stock' : 'Out of Stock' }}
+            </span>
+        </div>
+    </div>
+    <div class="p-5 flex-grow flex flex-col">
+        <div class="mb-2">
+            <h5 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white line-clamp-2" [title]="book.title">{{ book.title }}</h5>
+            <p class="text-sm font-medium text-blue-600 dark:text-blue-400">by {{ book.author }}</p>
+        </div>
+
+        <div class="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex flex-col">
+                    <span class="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-tighter">Availability</span>
+                    <span class="text-lg font-black text-gray-900 dark:text-white">{{ book.available_copies }} <span class="text-sm font-normal text-gray-500">/ {{ book.total_copies }}</span></span>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-gray-400 block uppercase font-bold">ISBN</span>
+                    <span class="text-xs font-mono text-gray-600 dark:text-gray-300">{{ book.isbn }}</span>
+                </div>
+            </div>
+
+            @if (authService.isLoggedIn()) {
+                <button (click)="borrowBook()" [disabled]="book.available_copies === 0"
+                    class="w-full inline-flex justify-center items-center px-4 py-2.5 text-sm font-bold text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform active:scale-95 shadow-sm">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    Borrow This Book
+                </button>
+            } @else {
+                <a routerLink="/login" class="w-full inline-flex justify-center items-center px-4 py-2.5 text-sm font-bold text-center text-blue-600 border-2 border-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+                    Login to Borrow
+                </a>
+            }
+        </div>
+    </div>
+</div>

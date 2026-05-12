@@ -1,0 +1,49 @@
+# ── Environments ───────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Python ─────────────────────────────────────────
+venv/
+.venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Node ───────────────────────────────────────────
+node_modules/
+dist/
+.angular/
+
+# ── IDE / Editors ──────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ── Logs ───────────────────────────────────────────
+logs/
+*.log
+
+# ── Databases ──────────────────────────────────────
+*.db
+*.sqlite3
+*.sqlite
+
+# ── Uploads (created at runtime) ───────────────────
+static/uploads/
+
+# ── Docker ─────────────────────────────────────────
+docker-data/

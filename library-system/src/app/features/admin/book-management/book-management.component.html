@@ -1,0 +1,101 @@
+<div class="mb-8 p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <h2 class="text-2xl font-bold mb-4 dark:text-white">{{ editingId() ? 'Edit Book' : 'Add New Book' }}</h2>
+    <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+            <input formControlName="title" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+        </div>
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Author</label>
+            <input formControlName="author" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+        </div>
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ISBN</label>
+            <input formControlName="isbn" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+        </div>
+        <div class="md:col-span-2">
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cover Image</label>
+            <div class="flex flex-col gap-3">
+                <div class="flex flex-wrap items-center gap-3">
+                    <button type="button" (click)="fileInput.click()" [disabled]="uploading()" class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 disabled:opacity-50 transition-all shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        {{ uploading() ? 'Uploading…' : 'Upload from device' }}
+                    </button>
+                    <span class="text-xs text-gray-400">or paste a URL</span>
+                    <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" class="hidden">
+                    <input formControlName="cover_url" type="text" class="flex-1 min-w-[200px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" placeholder="https://example.com/cover.jpg">
+                </div>
+            </div>
+            @if (bookForm.get('cover_url')?.value) {
+                <div class="mt-2 relative inline-block">
+                    <img [src]="bookForm.get('cover_url')?.value" class="h-32 w-auto object-cover rounded border" alt="Cover preview">
+                </div>
+            }
+        </div>
+        <div>
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total Copies</label>
+            <input formControlName="total_copies" type="number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+        </div>
+        <div class="md:col-span-2 flex justify-end gap-2">
+            @if (editingId()) {
+                <button type="button" (click)="cancelEdit()" class="px-5 py-2.5 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">Cancel</button>
+            }
+            <button type="submit" [disabled]="bookForm.invalid" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:opacity-50">
+                {{ editingId() ? 'Update Book' : 'Add Book' }}
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Loading State -->
+@if (loading()) {
+  <div class="flex justify-center items-center py-20">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+} @else {
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                  <th scope="col" class="px-6 py-3">Title</th>
+                  <th scope="col" class="px-6 py-3">Author</th>
+                  <th scope="col" class="px-6 py-3">ISBN</th>
+                  <th scope="col" class="px-6 py-3">Available</th>
+                  <th scope="col" class="px-6 py-3">Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              @for (book of books(); track book.id) {
+                  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ book.title }}</td>
+                      <td class="px-6 py-4">{{ book.author }}</td>
+                      <td class="px-6 py-4">{{ book.isbn }}</td>
+                      <td class="px-6 py-4">{{ book.available_copies }} / {{ book.total_copies }}</td>
+                      <td class="px-6 py-4 flex gap-3">
+                          <button (click)="editBook(book)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</button>
+                          <button (click)="confirmDelete(book)" class="font-medium text-red-600 dark:text-red-500 hover:underline">Delete</button>
+                      </td>
+                  </tr>
+              } @empty {
+                  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                      <td colspan="5" class="px-6 py-4 text-center">No books found. Add your first book above.</td>
+                  </tr>
+              }
+          </tbody>
+      </table>
+  </div>
+}
+
+<!-- Delete Confirmation Modal -->
+@if (deleteTarget(); as target) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Delete Book</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to delete <strong>"{{ target.title }}"</strong>? This action cannot be undone.</p>
+            <div class="flex justify-end gap-3">
+                <button (click)="cancelDelete()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">Cancel</button>
+                <button (click)="deleteBook(target.id)" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">Delete</button>
+            </div>
+        </div>
+    </div>
+}

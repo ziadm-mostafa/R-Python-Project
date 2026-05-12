@@ -1,0 +1,55 @@
+<div>
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">Create an account</h2>
+</div>
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
+    <div class="rounded-md shadow-sm -space-y-px">
+        <div>
+            <label for="username" class="sr-only">Username</label>
+            <input id="username" formControlName="username" type="text" required
+                [class.border-red-500]="fieldInvalid('username')"
+                class="appearance-none rounded-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                [class.border-gray-300]="!fieldInvalid('username')" placeholder="Username">
+            @if (fieldInvalid('username')) {
+                <p class="text-red-500 text-xs mt-1">Username is required</p>
+            }
+        </div>
+        <div>
+            <label for="email" class="sr-only">Email address</label>
+            <input id="email" formControlName="email" type="email" required
+                [class.border-red-500]="fieldInvalid('email')"
+                class="appearance-none rounded-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                [class.border-gray-300]="!fieldInvalid('email')" placeholder="Email address">
+            @if (fieldInvalid('email')) {
+                <p class="text-red-500 text-xs mt-1">Enter a valid email address</p>
+            }
+        </div>
+        <div>
+            <label for="password" class="sr-only">Password</label>
+            <input id="password" formControlName="password" type="password" required
+                [class.border-red-500]="fieldInvalid('password')"
+                class="appearance-none rounded-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                [class.border-gray-300]="!fieldInvalid('password')" placeholder="Password">
+            @if (fieldInvalid('password')) {
+                <p class="text-red-500 text-xs mt-1">Password must be at least 6 characters</p>
+            }
+        </div>
+        <div>
+            <label for="confirmPassword" class="sr-only">Confirm Password</label>
+            <input id="confirmPassword" formControlName="confirmPassword" type="password" required
+                [class.border-red-500]="fieldInvalid('confirmPassword') || passwordMismatch"
+                class="appearance-none rounded-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                [class.border-gray-300]="!fieldInvalid('confirmPassword') && !passwordMismatch" placeholder="Confirm Password">
+            @if (fieldInvalid('confirmPassword')) {
+                <p class="text-red-500 text-xs mt-1">Please confirm your password</p>
+            } @else if (passwordMismatch) {
+                <p class="text-red-500 text-xs mt-1">Passwords do not match</p>
+            }
+        </div>
+    </div>
+    <div>
+        <button type="submit" [disabled]="registerForm.invalid" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">Register</button>
+    </div>
+    <div class="text-center">
+        <a routerLink="/login" class="font-medium text-blue-600 hover:text-blue-500">Already have an account? Sign in</a>
+    </div>
+</form>

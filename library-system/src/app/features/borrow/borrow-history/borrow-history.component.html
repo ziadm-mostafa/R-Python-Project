@@ -1,0 +1,45 @@
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="flex justify-center items-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    } @else {
+      <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                  <th scope="col" class="px-6 py-3">Book</th>
+                  <th scope="col" class="px-6 py-3">Borrow Date</th>
+                  <th scope="col" class="px-6 py-3">Return Date</th>
+                  <th scope="col" class="px-6 py-3">Status</th>
+                  <th scope="col" class="px-6 py-3">Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              @for (record of history(); track record.id) {
+                  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                      <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ record.book_title || 'Book #' + record.book_id }}</td>
+                      <td class="px-6 py-4">{{ record.borrow_date | date:'shortDate' }}</td>
+                      <td class="px-6 py-4">{{ record.return_date ? (record.return_date | date:'shortDate') : '—' }}</td>
+                      <td class="px-6 py-4">
+                          @if (record.is_returned) {
+                              <span class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Returned</span>
+                          } @else {
+                              <span class="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Borrowed</span>
+                          }
+                      </td>
+                      <td class="px-6 py-4">
+                          @if (!record.is_returned) {
+                              <button (click)="returnBook(record)" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Return</button>
+                          }
+                      </td>
+                  </tr>
+              } @empty {
+                  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                      <td colspan="5" class="px-6 py-4 text-center">No borrowing history yet. <a routerLink="/books" class="text-blue-600 hover:underline">Explore books</a> to borrow your first one!</td>
+                  </tr>
+              }
+          </tbody>
+      </table>
+    }
+</div>

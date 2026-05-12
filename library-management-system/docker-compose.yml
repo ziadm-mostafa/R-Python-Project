@@ -1,0 +1,28 @@
+services:
+
+  redis:
+    image: redis:7
+    container_name: library_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: library_backend
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "mssql+pyodbc://sa:${SA_PASSWORD:-YourStrongPassword123!}@host.docker.internal,53516/library_db?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+      SECRET_KEY: "${SECRET_KEY:-supersecretkey1234567890}"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+    ports:
+      - "8001:8000"
+    volumes:
+      - .:/app
